@@ -1,3 +1,0 @@
-﻿run_id,workflow_name,workflow_category,input_dataset,output_files,status,start_time,end_time,duration_seconds,operator
-RUN-20260615185058-38bc3f,订单基础清洗流程,数据质量检查,delivery.csv,data_quality_report.csv,success,2026-06-15 18:50:58,2026-06-15 18:50:58,0.004,学生1：数据工程师
-RUN-20260615204852-7914e6,订单基础清洗流程,数据质量检查,delivery.csv,data_quality_report.csv,success,2026-06-15 20:48:52,2026-06-15 20:48:52,0.053,学生1：数据工程师

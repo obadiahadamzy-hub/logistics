@@ -1,4 +1,0 @@
-﻿issue_type,dataset_name,issue_count,suggestion
-重复订单,orders.csv,12,按 order_id 去重
-字段为空,orders.csv,6,补全 quantity 字段
-格式不统一,orders.csv,8,统一日期格式

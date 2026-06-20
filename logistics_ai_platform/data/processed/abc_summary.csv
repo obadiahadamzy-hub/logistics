@@ -1,4 +1,0 @@
-﻿abc_class,product_count,sales_amount,sales_amount_rate,stock_amount,stock_amount_rate,management_strategy
-A,32,930009.89,0.704,960356.32,0.286,重点保障商品，需优先补货
-B,58,254960.1,0.193,869693.31,0.259,稳定销售商品，维持正常库存
-C,110,136066.79,0.103,1527839.6,0.455,低贡献商品，存在库存占用风险

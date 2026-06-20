@@ -1,5 +1,0 @@
-﻿route_id,route_type,launch_point_id,target_outlet_id,distance_km,estimated_time_min,risk_level,coverage_count,battery_usage,reward_score,time_reward,safety_reward,coverage_reward,priority_reward,battery_reward,recommend_reason
-R-R,备用返航航线,LP003,O037,3.36,10,低,1,33.2,88.8,78.0,96,67,94,66.8,保留返航安全余量，适合天气或电量异常时启用
-R-B,低风险绕行航线,LP003,O037,3.67,10,低,2,39.0,87.5,78.0,92,79,94,61.0,避开高风险区域，综合安全得分最高
-R-C,多网点覆盖航线,LP003,O037,4.16,11,中,4,49.4,83.3,75.8,80,100,94,50.6,兼顾周边网点覆盖，适合批量应急任务
-R-A,最短直达航线,LP003,O037,3.17,9,高,1,31.5,82.8,80.2,68,67,94,68.5,距离最短，适合天气良好且风险较低的订单
