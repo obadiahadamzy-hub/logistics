@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~8.8.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "latitude": 35.30473758333334,
+    "longitude": 115.49598236666665,
+    "pitch": 0,
+    "zoom": 10
+  },
+  "layers": [
+    {
+      "@@type": "ScatterplotLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.026537,
+          "lon": 115.342368,
+          "outlet_id": "O035",
+          "outlet_name": "\u9a6c\u5cad\u5c97\u95471\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 63.79,
+          "town": "\u9a6c\u5cad\u5c97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.057362,
+          "lon": 115.271208,
+          "outlet_id": "O047",
+          "outlet_name": "\u9a6c\u5cad\u5c97\u954713\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 63.3,
+          "town": "\u9a6c\u5cad\u5c97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.026156,
+          "lon": 115.218932,
+          "outlet_id": "O037",
+          "outlet_name": "\u5b89\u5174\u95473\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 61.25,
+          "town": "\u5b89\u5174\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.054081,
+          "lon": 115.220383,
+          "outlet_id": "O041",
+          "outlet_name": "\u9a6c\u5cad\u5c97\u95477\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 61.08,
+          "town": "\u9a6c\u5cad\u5c97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.073934,
+          "lon": 115.254564,
+          "outlet_id": "O039",
+          "outlet_name": "\u5415\u9675\u95475\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 58.76,
+          "town": "\u5415\u9675\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.046448,
+          "lon": 115.231489,
+          "outlet_id": "O045",
+          "outlet_name": "\u5b89\u5174\u954711\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 57.83,
+          "town": "\u5b89\u5174\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.054416,
+          "lon": 115.232477,
+          "outlet_id": "O036",
+          "outlet_name": "\u5b89\u5174\u95472\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 57.0,
+          "town": "\u5b89\u5174\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.120854,
+          "lon": 115.219194,
+          "outlet_id": "O043",
+          "outlet_name": "\u9a6c\u5cad\u5c97\u95479\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 56.91,
+          "town": "\u9a6c\u5cad\u5c97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.050581,
+          "lon": 115.208273,
+          "outlet_id": "O046",
+          "outlet_name": "\u5415\u9675\u954712\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 55.34,
+          "town": "\u5415\u9675\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.102143,
+          "lon": 115.198216,
+          "outlet_id": "O040",
+          "outlet_name": "\u5b89\u5174\u95476\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 54.79,
+          "town": "\u5b89\u5174\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.022566,
+          "lon": 115.219477,
+          "outlet_id": "O044",
+          "outlet_name": "\u5415\u9675\u954710\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 51.88,
+          "town": "\u5415\u9675\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.068013,
+          "lon": 115.190455,
+          "outlet_id": "O042",
+          "outlet_name": "\u5415\u9675\u95478\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 50.38,
+          "town": "\u5415\u9675\u9547"
+        },
+        {
+          "cluster_center_lat": 35.062789076923075,
+          "cluster_center_lon": 115.2373913846154,
+          "cluster_id": 0,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            70,
+            130,
+            180,
+            210
+          ],
+          "lat": 35.113167,
+          "lon": 115.279052,
+          "outlet_id": "O038",
+          "outlet_name": "\u9a6c\u5cad\u5c97\u95474\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 49.73,
+          "town": "\u9a6c\u5cad\u5c97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.232385,
+          "lon": 115.46266,
+          "outlet_id": "O009",
+          "outlet_name": "\u5357\u57ce\u8857\u90539\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 38.32,
+          "town": "\u5357\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.229288,
+          "lon": 115.477805,
+          "outlet_id": "O016",
+          "outlet_name": "\u4e1c\u57ce\u8857\u905316\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 36.28,
+          "town": "\u4e1c\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.236717,
+          "lon": 115.472886,
+          "outlet_id": "O013",
+          "outlet_name": "\u5f00\u53d1\u533a13\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 35.82,
+          "town": "\u5f00\u53d1\u533a"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.223948,
+          "lon": 115.486621,
+          "outlet_id": "O020",
+          "outlet_name": "\u5f00\u53d1\u533a20\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 35.8,
+          "town": "\u5f00\u53d1\u533a"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.236192,
+          "lon": 115.512948,
+          "outlet_id": "O011",
+          "outlet_name": "\u7261\u4e39\u8857\u905311\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 35.44,
+          "town": "\u7261\u4e39\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.254899,
+          "lon": 115.485778,
+          "outlet_id": "O003",
+          "outlet_name": "\u4e1c\u57ce\u8857\u90533\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 35.38,
+          "town": "\u4e1c\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.214965,
+          "lon": 115.458475,
+          "outlet_id": "O007",
+          "outlet_name": "\u5357\u57ce\u8857\u90537\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 34.89,
+          "town": "\u5357\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.23459,
+          "lon": 115.449386,
+          "outlet_id": "O019",
+          "outlet_name": "\u4e1c\u57ce\u8857\u905319\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 34.14,
+          "town": "\u4e1c\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.252094,
+          "lon": 115.459168,
+          "outlet_id": "O018",
+          "outlet_name": "\u4e1c\u57ce\u8857\u905318\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 34.07,
+          "town": "\u4e1c\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.234511,
+          "lon": 115.47944,
+          "outlet_id": "O002",
+          "outlet_name": "\u5357\u57ce\u8857\u90532\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 32.53,
+          "town": "\u5357\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.239551,
+          "lon": 115.489035,
+          "outlet_id": "O014",
+          "outlet_name": "\u5357\u57ce\u8857\u905314\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 32.15,
+          "town": "\u5357\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.234232,
+          "lon": 115.497319,
+          "outlet_id": "O012",
+          "outlet_name": "\u5f00\u53d1\u533a12\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 32.01,
+          "town": "\u5f00\u53d1\u533a"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.224344,
+          "lon": 115.480692,
+          "outlet_id": "O017",
+          "outlet_name": "\u5357\u57ce\u8857\u905317\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 31.61,
+          "town": "\u5357\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.225355,
+          "lon": 115.488276,
+          "outlet_id": "O010",
+          "outlet_name": "\u5357\u57ce\u8857\u905310\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 28.32,
+          "town": "\u5357\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.239578,
+          "lon": 115.462754,
+          "outlet_id": "O005",
+          "outlet_name": "\u5357\u57ce\u8857\u90535\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 28.29,
+          "town": "\u5357\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.229962,
+          "lon": 115.524858,
+          "outlet_id": "O015",
+          "outlet_name": "\u7261\u4e39\u8857\u905315\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 27.82,
+          "town": "\u7261\u4e39\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.217556,
+          "lon": 115.511766,
+          "outlet_id": "O006",
+          "outlet_name": "\u7261\u4e39\u8857\u90536\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 24.38,
+          "town": "\u7261\u4e39\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.221832,
+          "lon": 115.468845,
+          "outlet_id": "O004",
+          "outlet_name": "\u4e1c\u57ce\u8857\u90534\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 23.65,
+          "town": "\u4e1c\u57ce\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.258726,
+          "lon": 115.50315,
+          "outlet_id": "O008",
+          "outlet_name": "\u5f00\u53d1\u533a8\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 22.14,
+          "town": "\u5f00\u53d1\u533a"
+        },
+        {
+          "cluster_center_lat": 35.2316443,
+          "cluster_center_lon": 115.4826561,
+          "cluster_id": 1,
+          "cluster_name": "\u897f\u5357\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u5e38\u89c4\u4f18\u5316\u7247\u533a",
+          "color": [
+            255,
+            99,
+            71,
+            210
+          ],
+          "lat": 35.192161,
+          "lon": 115.48126,
+          "outlet_id": "O001",
+          "outlet_name": "\u7261\u4e39\u8857\u90531\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u57ce\u533a",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 21.68,
+          "town": "\u7261\u4e39\u8857\u9053"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.423853,
+          "lon": 115.737789,
+          "outlet_id": "O032",
+          "outlet_name": "\u9ec4\u583d\u954712\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 57.04,
+          "town": "\u9ec4\u583d\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.416527,
+          "lon": 115.709046,
+          "outlet_id": "O025",
+          "outlet_name": "\u5c0f\u7559\u95475\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 56.33,
+          "town": "\u5c0f\u7559\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.456803,
+          "lon": 115.733608,
+          "outlet_id": "O023",
+          "outlet_name": "\u9ec4\u583d\u95473\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 54.77,
+          "town": "\u9ec4\u583d\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.457943,
+          "lon": 115.758956,
+          "outlet_id": "O029",
+          "outlet_name": "\u9ec4\u583d\u95479\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 54.07,
+          "town": "\u9ec4\u583d\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.387121,
+          "lon": 115.71759,
+          "outlet_id": "O033",
+          "outlet_name": "\u80e1\u96c6\u954713\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 53.78,
+          "town": "\u80e1\u96c6\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.40997,
+          "lon": 115.777692,
+          "outlet_id": "O024",
+          "outlet_name": "\u9ad8\u5e84\u95474\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 51.97,
+          "town": "\u9ad8\u5e84\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.345682,
+          "lon": 115.744645,
+          "outlet_id": "O026",
+          "outlet_name": "\u80e1\u96c6\u95476\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 50.16,
+          "town": "\u80e1\u96c6\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.469445,
+          "lon": 115.719944,
+          "outlet_id": "O028",
+          "outlet_name": "\u80e1\u96c6\u95478\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 48.06,
+          "town": "\u80e1\u96c6\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.477505,
+          "lon": 115.761821,
+          "outlet_id": "O027",
+          "outlet_name": "\u9ec4\u583d\u95477\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 47.47,
+          "town": "\u9ec4\u583d\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.420828,
+          "lon": 115.675415,
+          "outlet_id": "O034",
+          "outlet_name": "\u80e1\u96c6\u954714\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 43.81,
+          "town": "\u80e1\u96c6\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.391775,
+          "lon": 115.741704,
+          "outlet_id": "O030",
+          "outlet_name": "\u9ec4\u583d\u954710\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 43.05,
+          "town": "\u9ec4\u583d\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.425611,
+          "lon": 115.772592,
+          "outlet_id": "O021",
+          "outlet_name": "\u80e1\u96c6\u95471\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 42.92,
+          "town": "\u80e1\u96c6\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.374907,
+          "lon": 115.817805,
+          "outlet_id": "O031",
+          "outlet_name": "\u5c0f\u7559\u954711\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 36.02,
+          "town": "\u5c0f\u7559\u9547"
+        },
+        {
+          "cluster_center_lat": 35.42039992857143,
+          "cluster_center_lon": 115.74439692857143,
+          "cluster_id": 2,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            60,
+            179,
+            113,
+            210
+          ],
+          "lat": 35.427629,
+          "lon": 115.75295,
+          "outlet_id": "O022",
+          "outlet_name": "\u80e1\u96c6\u95472\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 34.88,
+          "town": "\u80e1\u96c6\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.536606,
+          "lon": 115.470086,
+          "outlet_id": "O051",
+          "outlet_name": "\u738b\u6d69\u5c6f\u95474\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u9ad8\u98ce\u9669",
+          "risk_score": 56.98,
+          "town": "\u738b\u6d69\u5c6f\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.467575,
+          "lon": 115.45488,
+          "outlet_id": "O058",
+          "outlet_name": "\u738b\u6d69\u5c6f\u954711\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 54.82,
+          "town": "\u738b\u6d69\u5c6f\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.529816,
+          "lon": 115.49547,
+          "outlet_id": "O049",
+          "outlet_name": "\u738b\u6d69\u5c6f\u95472\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 54.42,
+          "town": "\u738b\u6d69\u5c6f\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.513977,
+          "lon": 115.505904,
+          "outlet_id": "O056",
+          "outlet_name": "\u738b\u6d69\u5c6f\u95479\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 52.37,
+          "town": "\u738b\u6d69\u5c6f\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.562382,
+          "lon": 115.486934,
+          "outlet_id": "O060",
+          "outlet_name": "\u5434\u5e97\u954713\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 50.61,
+          "town": "\u5434\u5e97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.48718,
+          "lon": 115.526699,
+          "outlet_id": "O052",
+          "outlet_name": "\u674e\u6751\u95475\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4e2d\u98ce\u9669",
+          "risk_score": 49.83,
+          "town": "\u674e\u6751\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.527352,
+          "lon": 115.454945,
+          "outlet_id": "O053",
+          "outlet_name": "\u90fd\u53f8\u95476\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 49.19,
+          "town": "\u90fd\u53f8\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.599397,
+          "lon": 115.472939,
+          "outlet_id": "O055",
+          "outlet_name": "\u90fd\u53f8\u95478\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 48.11,
+          "town": "\u90fd\u53f8\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.540054,
+          "lon": 115.514425,
+          "outlet_id": "O048",
+          "outlet_name": "\u5434\u5e97\u95471\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 48.01,
+          "town": "\u5434\u5e97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.556439,
+          "lon": 115.561623,
+          "outlet_id": "O059",
+          "outlet_name": "\u674e\u6751\u954712\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 43.2,
+          "town": "\u674e\u6751\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.52353,
+          "lon": 115.58207,
+          "outlet_id": "O050",
+          "outlet_name": "\u90fd\u53f8\u95473\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 41.03,
+          "town": "\u90fd\u53f8\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.529734,
+          "lon": 115.5503,
+          "outlet_id": "O054",
+          "outlet_name": "\u5434\u5e97\u95477\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 40.77,
+          "town": "\u5434\u5e97\u9547"
+        },
+        {
+          "cluster_center_lat": 35.534577846153844,
+          "cluster_center_lon": 115.50755192307692,
+          "cluster_id": 3,
+          "cluster_name": "\u4e1c\u5317\u4e61\u9547\u98ce\u9669\u7247\u533a",
+          "cluster_risk_level": "\u91cd\u70b9\u4f18\u5316\u7247\u533a",
+          "color": [
+            148,
+            103,
+            189,
+            210
+          ],
+          "lat": 35.57547,
+          "lon": 115.5219,
+          "outlet_id": "O057",
+          "outlet_name": "\u738b\u6d69\u5c6f\u954710\u53f7\u914d\u9001\u7f51\u70b9",
+          "region_type": "\u4e61\u9547",
+          "risk_level": "\u4f4e\u98ce\u9669",
+          "risk_score": 39.24,
+          "town": "\u738b\u6d69\u5c6f\u9547"
+        }
+      ],
+      "filled": true,
+      "getFillColor": "@@=color",
+      "getLineColor": [
+        255,
+        255,
+        255
+      ],
+      "getPosition": "@@=[lon, lat]",
+      "getRadius": 95,
+      "id": "44ac1b4c-5bf2-44f6-9f82-b47937de82dc",
+      "lineWidthMinPixels": 1,
+      "pickable": true,
+      "radiusMaxPixels": 18,
+      "radiusMinPixels": 4,
+      "stroked": true
+    },
+    {
+      "@@type": "ScatterplotLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "cluster_id": 2,
+          "color": [
+            38,
+            120,
+            217,
+            240
+          ],
+          "covered_high_priority_orders": 211,
+          "covered_high_risk_outlets": 1,
+          "covered_outlets": 7,
+          "lat": 35.391775,
+          "launch_point_id": "LP001",
+          "launch_point_name": "\u4e1c\u5317\u4e61\u9547\u5e94\u6025\u8d77\u964d\u70b9",
+          "lon": 115.741704,
+          "recommend_reason": "\u9760\u8fd1\u9ad8\u98ce\u9669\u7f51\u70b9\u548c\u805a\u7c7b\u4e2d\u5fc3\uff0c\u517c\u987e\u9053\u8def\u7b49\u7ea7\u3001\u670d\u52a1\u80fd\u529b\u4e0eA\u7c7b\u91cd\u70b9\u5546\u54c1\u8986\u76d6",
+          "recommend_score": 91.56,
+          "service_radius_km": 5,
+          "town": "\u9ec4\u583d\u9547"
+        },
+        {
+          "cluster_id": 3,
+          "color": [
+            38,
+            120,
+            217,
+            240
+          ],
+          "covered_high_priority_orders": 244,
+          "covered_high_risk_outlets": 1,
+          "covered_outlets": 8,
+          "lat": 35.540054,
+          "launch_point_id": "LP002",
+          "launch_point_name": "\u897f\u5357\u4e61\u9547\u5e94\u6025\u8d77\u964d\u70b9",
+          "lon": 115.514425,
+          "recommend_reason": "\u9760\u8fd1\u9ad8\u98ce\u9669\u7f51\u70b9\u548c\u805a\u7c7b\u4e2d\u5fc3\uff0c\u517c\u987e\u9053\u8def\u7b49\u7ea7\u3001\u670d\u52a1\u80fd\u529b\u4e0eA\u7c7b\u91cd\u70b9\u5546\u54c1\u8986\u76d6",
+          "recommend_score": 89.54,
+          "service_radius_km": 5,
+          "town": "\u5434\u5e97\u9547"
+        },
+        {
+          "cluster_id": 0,
+          "color": [
+            38,
+            120,
+            217,
+            240
+          ],
+          "covered_high_priority_orders": 255,
+          "covered_high_risk_outlets": 6,
+          "covered_outlets": 9,
+          "lat": 35.054081,
+          "launch_point_id": "LP003",
+          "launch_point_name": "\u57ce\u533a\u4e61\u9547\u63a5\u9a73\u8d77\u964d\u70b9",
+          "lon": 115.220383,
+          "recommend_reason": "\u9760\u8fd1\u9ad8\u98ce\u9669\u7f51\u70b9\u548c\u805a\u7c7b\u4e2d\u5fc3\uff0c\u517c\u987e\u9053\u8def\u7b49\u7ea7\u3001\u670d\u52a1\u80fd\u529b\u4e0eA\u7c7b\u91cd\u70b9\u5546\u54c1\u8986\u76d6",
+          "recommend_score": 69.24,
+          "service_radius_km": 5,
+          "town": "\u9a6c\u5cad\u5c97\u9547"
+        }
+      ],
+      "filled": true,
+      "getFillColor": "@@=color",
+      "getLineColor": [
+        255,
+        255,
+        255
+      ],
+      "getPosition": "@@=[lon, lat]",
+      "getRadius": 420,
+      "id": "f04d7bb3-ef5d-46f1-a70f-9af9c4140dfa",
+      "lineWidthMinPixels": 2,
+      "pickable": true,
+      "radiusMaxPixels": 24,
+      "radiusMinPixels": 8,
+      "stroked": true
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  "mapboxKey": "",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'html': "<div style='background:white;color:black;padding:8px;border-radius:4px;border:1px solid #ccc;font-size:12px;'><b>outlet_name</b>: {outlet_name}<br/><b>cluster_name</b>: {cluster_name}<br/><b>risk_level</b>: {risk_level}<br/></div>", 'style': {'backgroundColor': 'white', 'color': 'black', 'fontSize': '12px'}};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+</html>
