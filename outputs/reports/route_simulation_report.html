@@ -1,0 +1,114 @@
+
+    <html>
+    <head>
+    <meta charset="utf-8" />
+    <style>
+        body { margin: 0; background: #07111f; color: #e9f4ff; font-family: "Microsoft YaHei", Arial, sans-serif; }
+        .route-shell { display: grid; grid-template-columns: 1fr 310px; gap: 16px; padding: 18px; background: radial-gradient(circle at 35% 25%, rgba(38,120,217,.32), transparent 30%), #07111f; border: 1px solid rgba(90,170,255,.28); border-radius: 16px; }
+        .stage { position: relative; height: 520px; border: 1px solid rgba(90,170,255,.22); border-radius: 14px; overflow: hidden; background: linear-gradient(180deg, #091a2d 0%, #050b14 100%); }
+        .stage:before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(63, 147, 255, .12) 1px, transparent 1px), linear-gradient(90deg, rgba(63, 147, 255, .12) 1px, transparent 1px); background-size: 34px 34px; transform: perspective(520px) rotateX(58deg) translateY(120px) scale(1.35); transform-origin: center bottom; }
+        svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .path { fill: none; stroke-width: 4; stroke-linecap: round; opacity: .7; filter: drop-shadow(0 0 7px currentColor); stroke-dasharray: 8 10; animation: dash 1.4s linear infinite; }
+        .path-a { stroke: #2f80ff; color: #2f80ff; }
+        .path-b { stroke: #21e6c1; color: #21e6c1; }
+        .path-c { stroke: #9b5cff; color: #9b5cff; }
+        .selected { stroke: #21e6c1; stroke-width: 7; opacity: 1; }
+        @keyframes dash { to { stroke-dashoffset: -36; } }
+        .pad, .target { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); }
+        .pad { left: 18%; top: 68%; width: 92px; height: 92px; background: radial-gradient(circle, rgba(45,159,255,.85), rgba(45,159,255,.08) 58%, transparent 62%); box-shadow: 0 0 30px #2297ff; }
+        .target { left: 79%; top: 34%; width: 70px; height: 70px; background: radial-gradient(circle, rgba(255,61,87,.9), rgba(255,61,87,.12) 58%, transparent 64%); box-shadow: 0 0 26px #ff3d57; animation: pulse 1.2s ease-in-out infinite; }
+        @keyframes pulse { 50% { transform: translate(-50%, -50%) scale(1.12); } }
+        .label { position: absolute; padding: 7px 10px; border-radius: 10px; background: rgba(5,15,27,.78); border: 1px solid rgba(138,196,255,.34); color: #dff2ff; font-size: 13px; }
+        .launch-label { left: 8%; top: 77%; }
+        .target-label { right: 6%; top: 20%; }
+        .drone { position: absolute; left: 18%; top: 68%; width: 34px; height: 34px; transform: translate(-50%, -50%); animation: fly 6s ease-in-out infinite; filter: drop-shadow(0 0 12px #fff); }
+        .drone:before, .drone:after { content: ""; position: absolute; background: #e8fbff; border-radius: 999px; }
+        .drone:before { left: 3px; right: 3px; top: 15px; height: 4px; }
+        .drone:after { top: 3px; bottom: 3px; left: 15px; width: 4px; }
+        .rotor { position: absolute; width: 10px; height: 10px; border: 2px solid #9fe7ff; border-radius: 50%; box-shadow: 0 0 10px #9fe7ff; }
+        .r1 { left: -2px; top: -2px; } .r2 { right: -2px; top: -2px; } .r3 { left: -2px; bottom: -2px; } .r4 { right: -2px; bottom: -2px; }
+        @keyframes fly { 0% { left:18%; top:68%; } 45% { left:52%; top:30%; } 80% { left:79%; top:34%; } 100% { left:79%; top:34%; } }
+        .panel { background: rgba(7,17,31,.82); border: 1px solid rgba(90,170,255,.26); border-radius: 14px; padding: 14px; }
+        .panel h3 { margin: 0 0 12px 0; color: #7fd8ff; }
+        .score { font-size: 54px; font-weight: 800; color: #21e6c1; line-height: 1; margin: 10px 0; }
+        .kv { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,.08); padding: 9px 0; color: #d9eaff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 14px; overflow: hidden; border-radius: 12px; }
+        th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; font-size: 13px; }
+        th { color: #8fdcff; background: rgba(33,104,177,.18); }
+        tr.active td { background: rgba(33,230,193,.14); color: #fff; }
+        .done { position: absolute; right: 24px; bottom: 20px; padding: 9px 13px; color: #b8ffe8; background: rgba(33,230,193,.13); border: 1px solid rgba(33,230,193,.45); border-radius: 999px; }
+    </style>
+    </head>
+    <body>
+        <div class="route-shell">
+            <div>
+                <div class="stage">
+                    <svg viewBox="0 0 900 520">
+                        <path class="path path-a" d="M160 355 C335 240, 520 190, 710 180" />
+                        <path class="path path-b" d="M160 355 C275 250, 460 110, 710 180" />
+                        <path class="path path-c" d="M160 355 C300 405, 610 360, 710 180" />
+                    </svg>
+                    <div class="pad"></div>
+                    <div class="target"></div>
+                    <div class="label launch-label">LP003 起降平台</div>
+                    <div class="label target-label">O037 安兴镇3号配送网点</div>
+                    <div class="drone"><span class="rotor r1"></span><span class="rotor r2"></span><span class="rotor r3"></span><span class="rotor r4"></span></div>
+                    <div class="done">仿真飞行中：推荐航线 R-R</div>
+                </div>
+                <table>
+                    <thead><tr><th>航线</th><th>类型</th><th>距离</th><th>时间</th><th>风险</th><th>奖励分</th></tr></thead>
+                    <tbody>
+        <tr class="active">
+            <td>R-R</td>
+            <td>备用返航航线</td>
+            <td>3.36 km</td>
+            <td>10 min</td>
+            <td>低</td>
+            <td>88.8</td>
+        </tr>
+        
+        <tr class="">
+            <td>R-B</td>
+            <td>低风险绕行航线</td>
+            <td>3.67 km</td>
+            <td>10 min</td>
+            <td>低</td>
+            <td>87.5</td>
+        </tr>
+        
+        <tr class="">
+            <td>R-C</td>
+            <td>多网点覆盖航线</td>
+            <td>4.16 km</td>
+            <td>11 min</td>
+            <td>中</td>
+            <td>83.3</td>
+        </tr>
+        
+        <tr class="">
+            <td>R-A</td>
+            <td>最短直达航线</td>
+            <td>3.17 km</td>
+            <td>9 min</td>
+            <td>高</td>
+            <td>82.8</td>
+        </tr>
+        </tbody>
+                </table>
+            </div>
+            <div class="panel">
+                <h3>AI航线评分面板</h3>
+                <div>当前推荐航线</div>
+                <div class="score">88.8</div>
+                <div class="kv"><span>航线类型</span><b>备用返航航线</b></div>
+                <div class="kv"><span>预计距离</span><b>3.36 km</b></div>
+                <div class="kv"><span>预计时间</span><b>10 min</b></div>
+                <div class="kv"><span>安全风险</span><b>低</b></div>
+                <div class="kv"><span>目标订单</span><b>ORD006589</b></div>
+                <div class="kv"><span>商品</span><b>玉米糁1号</b></div>
+                <p style="color:#b8cde5;line-height:1.7;">推荐理由：保留返航安全余量，适合天气或电量异常时启用。该航线用于高优先级异常订单的低空应急配送，不替代普通地面配送。</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    

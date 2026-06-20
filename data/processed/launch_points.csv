@@ -1,0 +1,4 @@
+﻿launch_point_id,launch_point_name,cluster_id,town,lon,lat,covered_outlets,covered_high_risk_outlets,covered_high_priority_orders,service_radius_km,recommend_score,recommend_reason
+LP001,东北乡镇应急起降点,2,黄堽镇,115.741704,35.391775,7,1,211,5,91.56,靠近高风险网点和聚类中心，兼顾道路等级、服务能力与A类重点商品覆盖
+LP002,西南乡镇应急起降点,3,吴店镇,115.514425,35.540054,8,1,244,5,89.54,靠近高风险网点和聚类中心，兼顾道路等级、服务能力与A类重点商品覆盖
+LP003,城区乡镇接驳起降点,0,马岭岗镇,115.220383,35.054081,9,6,255,5,69.24,靠近高风险网点和聚类中心，兼顾道路等级、服务能力与A类重点商品覆盖

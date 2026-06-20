@@ -1,0 +1,412 @@
+[
+  {
+    "workflow_id": "WF-20260615184528-7007cd",
+    "workflow_name": "订单基础清洗流程",
+    "workflow_category": "数据质量检查",
+    "description": "用于比赛演示的数据清洗流程，代码文本仅保存为流程资产。",
+    "input_dataset": "orders.csv",
+    "output_names": "clean_orders.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "regergreg ",
+    "params_json": {
+      "deduplicate_key": "order_id",
+      "timeout_threshold_hours": 72
+    },
+    "created_at": "2026-06-15 18:45:28",
+    "enabled": true
+  },
+  {
+    "workflow_id": "WF-20260615204811-4ce348",
+    "workflow_name": "配送数据通用清洗流程",
+    "workflow_category": "配送时长处理",
+    "description": "对 delivery.csv 应用通用数据清洗规则，处理空值、重复和格式问题。",
+    "input_dataset": "delivery.csv",
+    "output_names": "clean_delivery.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "def process(df):\n    \"\"\"通用数据清洗函数。\"\"\"\n    df = df.copy()\n    df = df.drop_duplicates()\n    df = df.fillna(\"\")\n    return df\n",
+    "params_json": {
+      "input_object": "df",
+      "deduplicate": true,
+      "fill_missing": true,
+      "standardize_format": true
+    },
+    "created_at": "2026-06-15 20:48:11",
+    "enabled": true
+  },
+  {
+    "workflow_id": "WF-20260615213036-6afa92",
+    "workflow_name": "配送数据通用清洗流程",
+    "workflow_category": "配送时长处理",
+    "description": "对 delivery.csv 应用通用数据清洗规则，处理空值、重复和格式问题。",
+    "input_dataset": "delivery.csv",
+    "output_names": "clean_delivery.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "def process(df):\n    \"\"\"通用数据清洗函数。\"\"\"\n    df = df.copy()\n    df = df.drop_duplicates()\n    df = df.fillna(\"\")\n    return df\n",
+    "params_json": {
+      "input_object": "df",
+      "deduplicate": true,
+      "fill_missing": true,
+      "standardize_format": true
+    },
+    "created_at": "2026-06-15 21:30:36",
+    "enabled": true
+  },
+  {
+    "workflow_id": "WF-20260615213338-44ea0e",
+    "workflow_name": "配送数据通用清洗流程",
+    "workflow_category": "配送时长处理",
+    "description": "对 delivery.csv 应用通用数据清洗规则，处理空值、重复和格式问题。",
+    "input_dataset": "delivery.csv",
+    "output_names": "clean_delivery.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "def process(df):\n    \"\"\"通用数据清洗函数。\"\"\"\n    df = df.copy()\n    df = df.drop_duplicates()\n    df = df.fillna(\"\")\n    return df\n",
+    "params_json": {
+      "input_object": "df",
+      "deduplicate": true,
+      "fill_missing": true,
+      "standardize_format": true
+    },
+    "created_at": "2026-06-15 21:33:38",
+    "enabled": true
+  },
+  {
+    "workflow_id": "WF-20260616212210-3acb40",
+    "workflow_name": "订单数据通用清洗流程",
+    "workflow_category": "订单基础清洗",
+    "description": "对 orders.csv 应用通用数据清洗规则，处理空值、重复和格式问题。",
+    "input_dataset": "orders.csv",
+    "output_names": "clean_orders.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "def process(df):\n    \"\"\"通用数据清洗函数。\"\"\"\n    df = df.copy()\n    df = df.drop_duplicates()\n    df = df.fillna(\"\")\n    return df\n",
+    "params_json": {
+      "input_object": "df",
+      "deduplicate": true,
+      "fill_missing": true,
+      "standardize_format": true
+    },
+    "created_at": "2026-06-16 21:22:10",
+    "enabled": true
+  },
+  {
+    "workflow_id": "WF-20260619113712-86e880",
+    "workflow_name": "订单数据通用清洗流程2",
+    "workflow_category": "订单基础清洗",
+    "description": "对 orders.csv 应用通用数据清洗规则，处理空值、重复和格式问题。",
+    "input_dataset": "orders.csv",
+    "output_names": "clean_orders.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "def process(df):\n    \"\"\"通用数据清洗函数。\"\"\"\n    df = df.copy()\n    df = df.drop_duplicates()\n    df = df.fillna(\"\")\n    return df\n",
+    "params_json": {
+      "input_object": "df",
+      "deduplicate": true,
+      "deduplicate_key": "order_id",
+      "deduplicate_keep_rule": "保留第一条",
+      "fill_missing": true,
+      "missing_columns": [
+        "quantity"
+      ],
+      "missing_strategy": "默认值填补",
+      "fill_value": "1",
+      "standardize_format": true,
+      "datetime_columns": [
+        "order_date"
+      ],
+      "datetime_format": "YYYY-MM-DD / YYYY-MM-DD HH:mm:ss",
+      "output_check": true,
+      "output_check_items": [
+        "行数变化",
+        "缺失值变化",
+        "重复值变化"
+      ],
+      "output_fail_action": "提示人工复核",
+      "workflow_nodes": [
+        {
+          "name": "数据输入",
+          "enabled": true,
+          "code_ref": "df 参数输入"
+        },
+        {
+          "name": "重复数据处理",
+          "enabled": true,
+          "code_ref": "drop_duplicates()"
+        },
+        {
+          "name": "空值处理",
+          "enabled": true,
+          "code_ref": "fillna() / isna()"
+        },
+        {
+          "name": "格式标准化",
+          "enabled": true,
+          "code_ref": "to_datetime()"
+        },
+        {
+          "name": "输出校验",
+          "enabled": true,
+          "code_ref": "return df"
+        },
+        {
+          "name": "保存结果",
+          "enabled": true,
+          "code_ref": "clean_orders.csv"
+        }
+      ],
+      "node_config": {
+        "重复数据处理": {
+          "enabled": true,
+          "deduplicate_key": "order_id",
+          "keep_rule": "保留第一条"
+        },
+        "空值处理": {
+          "enabled": true,
+          "missing_columns": [
+            "quantity"
+          ],
+          "missing_strategy": "默认值填补",
+          "fill_value": "1"
+        },
+        "格式标准化": {
+          "enabled": true,
+          "datetime_columns": [
+            "order_date"
+          ],
+          "datetime_format": "YYYY-MM-DD / YYYY-MM-DD HH:mm:ss"
+        },
+        "输出校验": {
+          "enabled": true,
+          "output_check_items": [
+            "行数变化",
+            "缺失值变化",
+            "重复值变化"
+          ],
+          "fail_action": "提示人工复核"
+        }
+      },
+      "code_step_match": {
+        "input": true,
+        "deduplicate": true,
+        "fill_missing": true,
+        "standardize_format": false,
+        "output_check": true
+      }
+    },
+    "created_at": "2026-06-19 11:37:12",
+    "enabled": true
+  },
+  {
+    "workflow_id": "WF-20260619113758-63a79a",
+    "workflow_name": "配送数据通用清洗流程",
+    "workflow_category": "配送时长处理",
+    "description": "对 delivery.csv 应用通用数据清洗规则，处理空值、重复和格式问题。",
+    "input_dataset": "delivery.csv",
+    "output_names": "clean_delivery.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "def process(df):\n    \"\"\"通用数据清洗函数。\"\"\"\n    df = df.copy()\n    df = df.drop_duplicates()\n    df = df.fillna(\"\")\n    return df\n",
+    "params_json": {
+      "input_object": "df",
+      "deduplicate": true,
+      "deduplicate_key": "order_id",
+      "deduplicate_keep_rule": "保留第一条",
+      "fill_missing": true,
+      "missing_columns": [],
+      "missing_strategy": "默认值填补",
+      "fill_value": "1",
+      "standardize_format": true,
+      "datetime_columns": [
+        "ship_time",
+        "sign_time"
+      ],
+      "datetime_format": "YYYY-MM-DD / YYYY-MM-DD HH:mm:ss",
+      "output_check": true,
+      "output_check_items": [
+        "行数变化",
+        "缺失值变化",
+        "重复值变化"
+      ],
+      "output_fail_action": "提示人工复核",
+      "workflow_nodes": [
+        {
+          "name": "数据输入",
+          "enabled": true,
+          "code_ref": "df 参数输入"
+        },
+        {
+          "name": "重复数据处理",
+          "enabled": true,
+          "code_ref": "drop_duplicates()"
+        },
+        {
+          "name": "空值处理",
+          "enabled": true,
+          "code_ref": "fillna() / isna()"
+        },
+        {
+          "name": "格式标准化",
+          "enabled": true,
+          "code_ref": "to_datetime()"
+        },
+        {
+          "name": "输出校验",
+          "enabled": true,
+          "code_ref": "return df"
+        },
+        {
+          "name": "保存结果",
+          "enabled": true,
+          "code_ref": "clean_delivery.csv"
+        }
+      ],
+      "node_config": {
+        "重复数据处理": {
+          "enabled": true,
+          "deduplicate_key": "order_id",
+          "keep_rule": "保留第一条"
+        },
+        "空值处理": {
+          "enabled": true,
+          "missing_columns": [],
+          "missing_strategy": "默认值填补",
+          "fill_value": "1"
+        },
+        "格式标准化": {
+          "enabled": true,
+          "datetime_columns": [
+            "ship_time",
+            "sign_time"
+          ],
+          "datetime_format": "YYYY-MM-DD / YYYY-MM-DD HH:mm:ss"
+        },
+        "输出校验": {
+          "enabled": true,
+          "output_check_items": [
+            "行数变化",
+            "缺失值变化",
+            "重复值变化"
+          ],
+          "fail_action": "提示人工复核"
+        }
+      },
+      "code_step_match": {
+        "input": true,
+        "deduplicate": true,
+        "fill_missing": true,
+        "standardize_format": false,
+        "output_check": true
+      }
+    },
+    "created_at": "2026-06-19 11:37:58",
+    "enabled": true
+  },
+  {
+    "workflow_id": "WF-20260619114122-97a4e9",
+    "workflow_name": "配送数据通用清洗流程",
+    "workflow_category": "配送时长处理",
+    "description": "对 delivery.csv 应用通用数据清洗规则，处理空值、重复和格式问题。",
+    "input_dataset": "delivery.csv",
+    "output_names": "clean_delivery.csv",
+    "author": "学生1：数据工程师",
+    "version": "v1.0",
+    "code_text": "def process(df):\n    \"\"\"通用数据清洗函数。\"\"\"\n    df = df.copy()\n    df = df.drop_duplicates()\n    df = df.fillna(\"\")\n    return df\n",
+    "params_json": {
+      "input_object": "df",
+      "deduplicate": true,
+      "deduplicate_key": "order_id",
+      "deduplicate_keep_rule": "保留第一条",
+      "fill_missing": true,
+      "missing_columns": [],
+      "missing_strategy": "默认值填补",
+      "fill_value": "1",
+      "standardize_format": true,
+      "datetime_columns": [
+        "ship_time",
+        "sign_time"
+      ],
+      "datetime_format": "YYYY-MM-DD / YYYY-MM-DD HH:mm:ss",
+      "output_check": true,
+      "output_check_items": [
+        "行数变化",
+        "缺失值变化",
+        "重复值变化"
+      ],
+      "output_fail_action": "提示人工复核",
+      "workflow_nodes": [
+        {
+          "name": "数据输入",
+          "enabled": true,
+          "code_ref": "df 参数输入"
+        },
+        {
+          "name": "重复数据处理",
+          "enabled": true,
+          "code_ref": "drop_duplicates()"
+        },
+        {
+          "name": "空值处理",
+          "enabled": true,
+          "code_ref": "fillna() / isna()"
+        },
+        {
+          "name": "格式标准化",
+          "enabled": true,
+          "code_ref": "to_datetime()"
+        },
+        {
+          "name": "输出校验",
+          "enabled": true,
+          "code_ref": "return df"
+        },
+        {
+          "name": "保存结果",
+          "enabled": true,
+          "code_ref": "clean_delivery.csv"
+        }
+      ],
+      "node_config": {
+        "重复数据处理": {
+          "enabled": true,
+          "deduplicate_key": "order_id",
+          "keep_rule": "保留第一条"
+        },
+        "空值处理": {
+          "enabled": true,
+          "missing_columns": [],
+          "missing_strategy": "默认值填补",
+          "fill_value": "1"
+        },
+        "格式标准化": {
+          "enabled": true,
+          "datetime_columns": [
+            "ship_time",
+            "sign_time"
+          ],
+          "datetime_format": "YYYY-MM-DD / YYYY-MM-DD HH:mm:ss"
+        },
+        "输出校验": {
+          "enabled": true,
+          "output_check_items": [
+            "行数变化",
+            "缺失值变化",
+            "重复值变化"
+          ],
+          "fail_action": "提示人工复核"
+        }
+      },
+      "code_step_match": {
+        "input": true,
+        "deduplicate": true,
+        "fill_missing": true,
+        "standardize_format": false,
+        "output_check": true
+      }
+    },
+    "created_at": "2026-06-19 11:41:22",
+    "enabled": true
+  }
+]
