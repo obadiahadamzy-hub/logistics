@@ -1894,6 +1894,7 @@ def page_qa() -> None:
         threshold_value = float(rag_config.get("threshold", 0.65))
         retrieved = retrieve_rag_context(question, top_k_value, threshold_value)
         st.session_state["module4_rag_context"] = retrieved
+        st.session_state["module4_has_asked_question"] = True
         answer = mock_answer(question, metrics)
         st.session_state["module4_question"] = question
         st.session_state["module4_answer"] = answer
@@ -1906,10 +1907,11 @@ def page_qa() -> None:
             st.markdown(message["content"])
 
     rag_context = st.session_state.get("module4_rag_context")
-    if (not isinstance(rag_context, pd.DataFrame) or rag_context.empty) and RAG_RETRIEVAL_FILE.exists():
+    has_asked_question = st.session_state.get("module4_has_asked_question", False)
+    if has_asked_question and (not isinstance(rag_context, pd.DataFrame) or rag_context.empty) and RAG_RETRIEVAL_FILE.exists():
         rag_context = read_csv(RAG_RETRIEVAL_FILE)
         st.session_state["module4_rag_context"] = rag_context
-    if isinstance(rag_context, pd.DataFrame) and not rag_context.empty:
+    if has_asked_question and isinstance(rag_context, pd.DataFrame) and not rag_context.empty:
         st.markdown("#### 最近一次RAG知识召回结果")
         st.caption("用于展示当前问题实际召回的知识片段和来源文件。")
         render_retrieval_files_table(retrieval_file_summary(rag_context))
@@ -1986,7 +1988,7 @@ def page_report_center() -> None:
             lines.append(step)
             log_box.code("\n".join(lines), language="text")
             progress.progress(idx / len(ANALYSIS_STEPS))
-            time.sleep(0.1)
+            time.sleep(6.0 / len(ANALYSIS_STEPS))
         st.session_state["module4_analysis_done"] = True
         st.session_state["module4_analysis_log"] = lines
         write_log("执行大模型分析过程", "多模块结果文件", "report_outline", remark="生成报告大纲")
@@ -2016,6 +2018,8 @@ def page_report_center() -> None:
 
     if generate_clicked:
         report_type = st.session_state.get("module4_report_type", report_type)
+        with st.spinner("正在生成经营诊断报告..."):
+            time.sleep(6.0)
         md_path, html_path, markdown_text = save_report(metrics, report_type, prompt)
         stream_markdown_output(markdown_text, duration_seconds=10.0)
         st.session_state["module4_report_markdown"] = markdown_text
@@ -2226,7 +2230,7 @@ def page_dashboard() -> None:
         action_cycle = st.radio("行动周期", ["7天应急处理", "15天专项优化", "30天经营提升"], horizontal=True)
         risk_preference = st.radio("风险偏好", ["保守", "均衡", "激进"], index=0, horizontal=True)
         departments = ["采购部", "仓储部", "配送部", "网点运营部", "低空项目组", "管理层"]
-        selected_departments = st.multiselect("重点参与部门", departments, default=departments)
+        selected_departments = st.multiselect("重点参与部门", departments, default=[])
     with config_right:
         sales_weight = st.slider("销售保障权重", 0, 40, 0)
         inventory_weight = st.slider("库存资金权重", 0, 40, 0)
@@ -2253,7 +2257,7 @@ def page_dashboard() -> None:
             "正在组织库存、配送、财务和低空专家会商...",
             "正在计算方案推荐评分和风险提示...",
         ]
-        render_timed_steps(steps, duration_seconds=5.0)
+        render_timed_steps(steps, duration_seconds=10.0)
         plans = generate_decision_plans(metrics, problem, budget_level, action_cycle, risk_preference, selected_departments, weights)
         recommended_plan = plans.iloc[0]["plan_name"] if not plans.empty else "均衡方案"
         experts = expert_consultation_df(metrics, problem, recommended_plan)
@@ -2298,7 +2302,7 @@ def page_dashboard() -> None:
         fixed_plan_order = ["保守方案", "均衡方案", "激进方案"]
         option_names = [name for name in fixed_plan_order if name in set(plans["plan_name"])]
         selected_plan_name = st.radio("选择最终采用方案", option_names, index=0, horizontal=True)
-        decision_opinion = st.text_area("填写决策意见", value=f"选择{selected_plan_name}，按计划生成部门任务并跟踪执行效果。", height=90)
+        decision_opinion = st.text_area("填写决策意见", value="", height=90)
         confirm_clicked = st.button("确认采用该方案并生成行动清单", type="primary", use_container_width=True)
 
         if confirm_clicked:

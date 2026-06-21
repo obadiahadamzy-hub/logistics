@@ -171,6 +171,21 @@ def scroll_to_anchor(anchor_id: str) -> None:
     )
 
 
+def render_timed_steps(steps: list[str], duration_seconds: float) -> None:
+    if not steps:
+        time.sleep(duration_seconds)
+        return
+    progress = st.progress(0)
+    log_box = st.empty()
+    lines = []
+    sleep_seconds = duration_seconds / len(steps)
+    for index, step in enumerate(steps, start=1):
+        lines.append(step)
+        log_box.code("\n".join(lines), language="text")
+        progress.progress(index / len(steps))
+        time.sleep(sleep_seconds)
+
+
 def load_orders() -> pd.DataFrame:
     path = find_file("clean_orders.csv", ["orders.csv"])
     if path is None:
@@ -399,6 +414,16 @@ def input_status() -> pd.DataFrame:
 def page_receive() -> None:
     st.header("配送规划数据接收")
     if st.button("接收配送规划数据", type="primary"):
+        render_timed_steps(
+            [
+                "正在连接模块一清洗数据...",
+                "正在读取配送记录与订单结果...",
+                "正在读取网点基础指标...",
+                "正在读取商品基础指标...",
+                "正在完成配送规划数据接收...",
+            ],
+            duration_seconds=6.0,
+        )
         ensure_abnormal_delivery()
         ensure_outlet_metrics()
         write_log("接收配送规划数据", "clean_delivery.csv;outlet_metrics.csv;high_priority_products.csv")
@@ -1006,7 +1031,7 @@ def evaluate_k_values(features: list[str], k_values: list[int], standardize: boo
 def page_cluster() -> None:
     st.header("K-Means聚类参数配置与分区")
     feature_options = ["lon", "lat", "order_count_90d", "timeout_rate_calc", "avg_actual_hours", "risk_score", "high_priority_order_count", "road_level", "service_level"]
-    default_features = ["lon", "lat", "order_count_90d", "timeout_rate_calc", "risk_score", "high_priority_order_count"]
+    default_features = []
     features = st.multiselect("选择聚类特征", feature_options, default=default_features)
     col1, col2 = st.columns(2)
     with col1:
@@ -1234,6 +1259,17 @@ def page_problem_judgement() -> None:
         if not selected_labels:
             st.warning("请至少选择一类接收数据。")
             return
+        render_timed_steps(
+            [
+                "正在连接前序模块输出目录...",
+                "正在读取配送清洗数据...",
+                "正在读取订单清洗数据...",
+                "正在读取网点基础指标...",
+                "正在读取商品基础指标...",
+                "正在完成配送规划数据接收...",
+            ],
+            duration_seconds=6.0,
+        )
         selected_items = [label_map[label] for label in selected_labels]
         if any(item["key"] == "outlets" for item in selected_items):
             ensure_outlet_metrics()
@@ -1420,17 +1456,17 @@ def page_risk_weight_v2() -> None:
     col_exception, col_base = st.columns(2)
     with col_exception:
         st.markdown("#### 异常订单结果权重")
-        exception_rate_weight = st.slider("异常订单率", 0, 30, 20)
-        a_class_weight = st.slider("A类重点商品超时数", 0, 25, 15)
-        fresh_weight = st.slider("生鲜冷链超时数", 0, 20, 10)
-        long_weight = st.slider("超长配送订单数", 0, 20, 10)
+        exception_rate_weight = st.slider("异常订单率", 0, 30, 5)
+        a_class_weight = st.slider("A类重点商品超时数", 0, 25, 5)
+        fresh_weight = st.slider("生鲜冷链超时数", 0, 20, 5)
+        long_weight = st.slider("超长配送订单数", 0, 20, 5)
         priority_exception_weight = st.slider("高优先级商品超时数", 0, 15, 5)
     with col_base:
         st.markdown("#### 网点基础数据权重")
-        avg_hours_weight = st.slider("平均配送时长", 0, 20, 10)
-        history_timeout_weight = st.slider("历史超时率", 0, 20, 10)
+        avg_hours_weight = st.slider("平均配送时长", 0, 20, 5)
+        history_timeout_weight = st.slider("历史超时率", 0, 20, 5)
         return_rate_weight = st.slider("退货率", 0, 15, 5)
-        road_weight = st.slider("道路等级风险", 0, 20, 10)
+        road_weight = st.slider("道路等级风险", 0, 20, 5)
         service_weight = st.slider("服务能力不足", 0, 15, 5)
 
     exception_weight_total = exception_rate_weight + a_class_weight + fresh_weight + long_weight + priority_exception_weight
@@ -1456,6 +1492,16 @@ def page_risk_weight_v2() -> None:
             "road": road_weight,
             "service": service_weight,
         }
+        render_timed_steps(
+            [
+                "正在读取网点异常汇总...",
+                "正在读取网点基础指标...",
+                "正在归一化异常订单风险...",
+                "正在计算基础条件风险...",
+                "正在生成最终风险评分...",
+            ],
+            duration_seconds=6.0,
+        )
         st.markdown('<div id="module3-risk-score-results"></div>', unsafe_allow_html=True)
         st.subheader("权重计算公式")
         st.code(
@@ -1637,7 +1683,7 @@ def page_cluster_eval_v2() -> None:
         st.warning("请先完成网点异常汇总与风险评分，生成 outlet_risk_score.csv。")
         return
     feature_options = ["lon", "lat", "order_count_90d", "timeout_rate_calc", "avg_actual_hours", "risk_score", "high_priority_order_count", "road_level", "service_level"]
-    default_features = ["lon", "lat", "order_count_90d", "timeout_rate_calc", "risk_score", "high_priority_order_count"]
+    default_features = []
     features = st.multiselect("第一步：选择聚类特征", feature_options, default=default_features)
     k_col, standard_col = st.columns([2, 1])
     with k_col:
@@ -1660,6 +1706,16 @@ def page_cluster_eval_v2() -> None:
         if not k_range_ready:
             st.error("请选择完整且有效的K值测试范围。")
             return
+        render_timed_steps(
+            [
+                "正在读取网点风险评分结果...",
+                "正在构建多特征聚类矩阵...",
+                "正在执行不同K值聚类测试...",
+                "正在计算轮廓系数...",
+                "正在计算组内误差SSE...",
+            ],
+            duration_seconds=6.0,
+        )
         k_eval = evaluate_k_values(features, list(range(k_min_choice, k_max_choice + 1)), standardize)
         st.session_state["module3_k_eval_df"] = k_eval
         st.session_state["module3_k_tested"] = True
@@ -1902,6 +1958,16 @@ def page_launch_candidate_rules() -> None:
         cover_fresh = st.checkbox("优先覆盖生鲜冷链订单", value=True)
 
     if st.button("筛选候选起降点", type="primary"):
+        render_timed_steps(
+            [
+                "正在读取K-Means聚类片区...",
+                "正在计算片区中心和服务半径...",
+                "正在评估道路等级与服务能力...",
+                "正在叠加高风险网点和重点订单覆盖...",
+                "正在生成候选起降点地图...",
+            ],
+            duration_seconds=6.0,
+        )
         candidates = make_launch_candidates(service_radius, road_threshold, service_threshold, cover_high, cover_priority, cover_fresh, candidate_count)
         cluster_count = candidates["cluster_id"].nunique() if "cluster_id" in candidates.columns else 0
         expected_count = cluster_count * candidate_count
@@ -2553,7 +2619,7 @@ def page_route_planning() -> None:
         "服务半径",
         "覆盖网点数量",
     ]
-    default_states = ["起降点位置", "目标网点位置", "商品优先级", "商品类型", "网点风险等级", "飞行距离", "商品重量", "天气风险", "初始电量"]
+    default_states = []
     selected_states = st.multiselect("State 状态变量选择", state_options, default=default_states)
 
     action_options = {
@@ -2565,11 +2631,11 @@ def page_route_planning() -> None:
     selected_actions_label = st.multiselect(
         "Action 动作空间选择",
         list(action_options.values()),
-        default=["A 最短直达航线", "B 低风险绕行航线", "C 多网点覆盖航线", "R 备用返航航线"],
+        default=[],
     )
     enabled_actions = [key for key, label in action_options.items() if label in selected_actions_label]
 
-    reward_template = st.selectbox("Reward 奖励函数模板", ["A类冷链超时订单模板", "批量乡镇订单模板", "恶劣天气安全模板", "自定义权重"], index=0)
+    reward_template = st.selectbox("Reward 奖励函数模板", ["A类冷链超时订单模板", "批量乡镇订单模板", "恶劣天气安全模板", "自定义权重"], index=3)
     template_weights = {
         "A类冷链超时订单模板": {"time": 35, "safety": 25, "priority": 20, "battery": 15, "coverage": 5},
         "批量乡镇订单模板": {"time": 25, "safety": 20, "priority": 15, "battery": 15, "coverage": 25},
@@ -2603,13 +2669,13 @@ def page_route_planning() -> None:
 
     rl_col1, rl_col2, rl_col3, rl_col4 = st.columns(4)
     with rl_col1:
-        learning_rate = st.slider("学习率 alpha", 0.01, 0.20, 0.08, step=0.01)
+        learning_rate = st.slider("学习率 alpha", 0.00, 0.20, 0.00, step=0.01)
     with rl_col2:
-        discount_factor = st.slider("折扣因子 gamma", 0.70, 0.99, 0.92, step=0.01)
+        discount_factor = st.slider("折扣因子 gamma", 0.00, 0.99, 0.00, step=0.01)
     with rl_col3:
-        exploration_rate = st.slider("探索率 epsilon", 0.00, 0.40, 0.12, step=0.01)
+        exploration_rate = st.slider("探索率 epsilon", 0.00, 0.40, 0.00, step=0.01)
     with rl_col4:
-        train_rounds = st.slider("模拟训练轮次", 50, 300, 120, step=10)
+        train_rounds = st.slider("模拟训练轮次", 0, 300, 0, step=10)
 
     route_param_key = f"{selected_label}|{max_distance_km}|{max_time_min}|{max_payload}|{min_battery}|{weather}|{optimization_goal}|{learning_rate}|{discount_factor}|{exploration_rate}|{train_rounds}|{selected_states}|{enabled_actions}|{reward_weights}"
     if st.session_state.get("route_param_key") != route_param_key:
@@ -2635,6 +2701,21 @@ def page_route_planning() -> None:
         if not enabled_actions:
             st.error("请至少选择一个Action航线动作。")
             return
+        render_timed_steps(
+            [
+                "正在初始化强化学习航线环境...",
+                "正在读取State状态变量...",
+                "正在加载Action动作空间...",
+                "正在构建Reward奖励函数...",
+                "正在评估起降点与目标网点距离...",
+                "正在执行第1阶段航线探索...",
+                "正在执行第2阶段奖励回传...",
+                "正在更新候选航线价值评分...",
+                "正在筛选最优候选航线...",
+                "正在生成航线评分与可视化结果...",
+            ],
+            duration_seconds=15.0,
+        )
         candidates = make_route_candidates(order_row, max_distance_km, max_time_min, min_battery, weather, optimization_goal, learning_rate, discount_factor, exploration_rate, train_rounds, reward_weights, enabled_actions)
         st.session_state["route_candidates"] = candidates
         st.session_state["route_order_label"] = selected_label

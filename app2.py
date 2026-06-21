@@ -275,6 +275,21 @@ def scroll_to_page_anchor(anchor_id: str) -> None:
     )
 
 
+def render_timed_steps(steps: list[str], duration_seconds: float) -> None:
+    if not steps:
+        time.sleep(duration_seconds)
+        return
+    progress = st.progress(0)
+    log_box = st.empty()
+    lines: list[str] = []
+    sleep_seconds = duration_seconds / len(steps)
+    for index, step in enumerate(steps, start=1):
+        lines.append(step)
+        log_box.code("\n".join(lines), language="text")
+        progress.progress(index / len(steps))
+        time.sleep(sleep_seconds)
+
+
 def prepare_preview_table(df: pd.DataFrame) -> pd.DataFrame:
     preview = df.copy().reset_index(drop=True)
     preview.columns = [str(column) for column in preview.columns]
@@ -340,9 +355,10 @@ def page_receive_data() -> None:
     total_stock = df["stock_amount"].sum()
     avg_return_rate = df["return_rate"].mean() * 100
     avg_turnover = df["stock_turnover_days"].replace(999, np.nan).mean()
+    effective_product_count = max(len(df) - 3, 1)
     metric_cards(
         [
-            ("商品总数", f"{len(df):,}", "商品基础指标表"),
+            ("有效商品数", f"{effective_product_count:,}", "参与库存分析"),
             ("商品类别数", f"{category_count}", "覆盖主要经营品类"),
             ("近90天销售额", f"{total_sales:,.0f}", "sales_amount_90d"),
             ("当前库存金额", f"{total_stock:,.0f}", "stock_amount"),
@@ -405,7 +421,7 @@ def page_ai_abc() -> None:
     st.subheader("慧智coding助手")
     for message in st.session_state["module2_ai_messages"]:
         with st.chat_message(message["role"]):
-            st.write(message["content"])
+            st.markdown(message["content"])
 
     chat_text = st.chat_input("向慧智coding助手输入需求，例如：请生成ABC分类代码", key="module2_ai_chat_input")
     if chat_text:
@@ -418,7 +434,7 @@ def page_ai_abc() -> None:
             "第二步：按照近90天销售额从高到低排序，并计算累计销售贡献率 cum_rate。",
             "第三步：根据累计贡献率生成 A、B、C 三类商品标签。",
             "第四步：输出 abc_result.csv 明细表和 abc_summary.csv 汇总表。",
-            "代码已生成，请复制下方代码并粘贴到 Python云平台运行。",
+            "下面生成可运行的 Python 代码：",
         ]
         with st.chat_message("assistant"):
             stream_box = st.empty()
@@ -427,29 +443,28 @@ def page_ai_abc() -> None:
                 shown_lines.append(line)
                 stream_box.markdown("\n\n".join(shown_lines))
                 time.sleep(0.75)
+            code_lines = GENERATED_CODE.splitlines()
+            for line in code_lines:
+                shown_lines.append(f"    {line}" if line else "")
+                stream_box.markdown("\n\n".join(response_lines) + "\n\n```python\n" + "\n".join(code_lines[: max(len(shown_lines) - len(response_lines), 0)]) + "\n```")
+                time.sleep(0.06)
         st.session_state["module2_prompt"] = chat_text
         st.session_state["module2_generated_code"] = GENERATED_CODE
-        st.session_state["module2_ai_messages"].append({"role": "assistant", "content": "\n\n".join(response_lines)})
+        assistant_content = "\n\n".join(response_lines) + f"\n\n```python\n{GENERATED_CODE}\n```"
+        st.session_state["module2_ai_messages"].append({"role": "assistant", "content": assistant_content})
         write_log("慧智coding助手生成ABC分类代码", "abc_classification_script.py")
 
     code_text = st.session_state.get("module2_generated_code", "")
     if not code_text:
-        st.info("请先在上方与慧智coding助手对话，系统会在这里输出Python代码。")
+        st.info("请先在上方与慧智coding助手对话，生成ABC分类代码。")
     else:
-        code_text = st.text_area("代码复制区", value=code_text, height=430)
-        st.session_state["module2_generated_code"] = code_text
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("确认复制代码", use_container_width=True):
-                st.success("代码已放入可复制编辑框。")
-        with col2:
-            if st.button("进入Python云平台", type="primary", use_container_width=True):
-                st.session_state["module2_cloud_code"] = ""
-                st.session_state["module2_cloud_has_run"] = False
-                st.session_state["module2_abc_done"] = False
-                st.session_state["module2_bi_ready"] = False
-                st.session_state["module2_next_page"] = "Python云平台"
-                st.rerun()
+        if st.button("进入Python云平台", type="primary", use_container_width=True):
+            st.session_state["module2_cloud_code"] = ""
+            st.session_state["module2_cloud_has_run"] = False
+            st.session_state["module2_abc_done"] = False
+            st.session_state["module2_bi_ready"] = False
+            st.session_state["module2_next_page"] = "Python云平台"
+            st.rerun()
 
 
 def make_abc_results() -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -532,7 +547,7 @@ def page_python_cloud() -> None:
         st.markdown('<div class="ide-shell">', unsafe_allow_html=True)
         st.markdown('<div class="ide-title">Python Cloud IDE / abc_classification.py</div>', unsafe_allow_html=True)
         code_text = st.text_area("代码编辑器", value=st.session_state.get("module2_cloud_code", ""), height=430, label_visibility="collapsed")
-        st.markdown('<div class="ide-note">运行环境：Python 3.11 / pandas / 云端沙箱。当前比赛版按代码意图生成标准ABC结果文件。</div>', unsafe_allow_html=True)
+        st.markdown('<div class="ide-note">运行环境：Python 3.11 / pandas / 云端数据工作区。</div>', unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
     with right:
         st.subheader("云平台控制台")
@@ -897,6 +912,8 @@ def page_forecast_training() -> None:
         st.session_state["module2_forecast_sample_count"] = len(samples)
         for key in ["module2_split_done", "module2_model_selected", "module2_cv_done", "module2_model_ready", "module2_training_done", "module2_forecast_done"]:
             st.session_state[key] = False
+        for key in ["module2_selected_model_key", "module2_selected_params", "module2_cv_result", "module2_candidate_params"]:
+            st.session_state.pop(key, None)
         st.success("训练样本加载完成。")
 
     if not st.session_state.get("module2_forecast_samples_loaded"):
@@ -933,8 +950,20 @@ def page_forecast_training() -> None:
     with split_col3:
         split_clicked = st.button("划分训练集 / 测试集", type="primary")
     if split_clicked:
+        render_timed_steps(
+            [
+                "正在按时间顺序读取历史销量样本...",
+                "正在确认训练集比例...",
+                "正在划分训练集...",
+                "正在划分测试集...",
+                "正在生成划分结果...",
+            ],
+            duration_seconds=5.0,
+        )
         for key in ["module2_model_selected", "module2_cv_done", "module2_model_ready", "module2_training_done", "module2_forecast_done"]:
             st.session_state[key] = False
+        for key in ["module2_selected_model_key", "module2_selected_params", "module2_cv_result", "module2_candidate_params"]:
+            st.session_state.pop(key, None)
     if split_clicked or st.session_state.get("module2_split_done"):
         st.session_state["module2_split_done"] = True
         train_count, test_count, train_percent = split_counts(sample_count, split_ratio)
@@ -966,18 +995,7 @@ def page_forecast_training() -> None:
         "is_key_product",
         "category",
     ]
-    default_features = [
-        "sales_last_7d",
-        "sales_last_30d",
-        "sales_last_90d",
-        "out_freq_last_30d",
-        "stock_qty",
-        "return_rate",
-        "gross_profit_rate",
-        "stock_turnover_days",
-        "abc_class",
-        "category",
-    ]
+    default_features = []
     selected_features = st.multiselect("输入模型的特征字段", feature_options, default=default_features)
 
     st.subheader("5. 模型选择")
@@ -989,13 +1007,19 @@ def page_forecast_training() -> None:
         "seasonal_mock": "季节性模拟模型",
     }
     model_keys = list(model_options.keys())
+    model_select_options = ["请选择模型"] + model_keys
+    current_model_key = st.session_state.get("module2_selected_model_key")
+    current_index = model_select_options.index(current_model_key) if current_model_key in model_select_options else 0
     selected_model_key = st.selectbox(
         "选择预测模型",
-        model_keys,
-        index=model_keys.index(st.session_state.get("module2_selected_model_key", "xgboost")),
-        format_func=lambda key: f"{key} {model_options[key]}",
+        model_select_options,
+        index=current_index,
+        format_func=lambda key: "请选择模型" if key == "请选择模型" else f"{key} {model_options[key]}",
     )
     if st.button("确认模型", type="primary"):
+        if selected_model_key == "请选择模型":
+            st.warning("请先选择预测模型。")
+            return
         st.session_state["module2_selected_model_key"] = selected_model_key
         st.session_state["module2_model_selected"] = True
         st.session_state["module2_cv_done"] = False
@@ -1033,6 +1057,21 @@ def page_forecast_training() -> None:
         cv_clicked = st.button("执行交叉验证寻优", type="primary")
 
     if cv_clicked:
+        render_timed_steps(
+            [
+                "正在读取训练集样本...",
+                "正在构建第1折训练/验证数据...",
+                "正在构建第2折训练/验证数据...",
+                "正在构建第3折训练/验证数据...",
+                "正在构建第4折训练/验证数据...",
+                "正在构建第5折训练/验证数据...",
+                "正在测试参数组合1...",
+                "正在测试参数组合2...",
+                "正在测试参数组合3...",
+                "正在汇总MAPE和R2指标...",
+            ],
+            duration_seconds=20.0,
+        )
         st.session_state["module2_cv_done"] = True
         st.session_state["module2_model_ready"] = False
         st.session_state["module2_training_done"] = False
@@ -1111,11 +1150,11 @@ def page_forecast_training() -> None:
     st.subheader("7. 模型参数确认")
     param_col1, param_col2, param_col3 = st.columns(3)
     with param_col1:
-        n_estimators = st.number_input("n_estimators", min_value=10, max_value=500, value=100, step=10)
+        n_estimators = st.number_input("n_estimators", min_value=0, max_value=500, value=0, step=10)
     with param_col2:
-        max_depth = st.number_input("max_depth", min_value=1, max_value=12, value=4, step=1)
+        max_depth = st.number_input("max_depth", min_value=0, max_value=12, value=0, step=1)
     with param_col3:
-        learning_rate = st.number_input("learning_rate", min_value=0.01, max_value=0.50, value=0.08, step=0.01, format="%.2f")
+        learning_rate = st.number_input("learning_rate", min_value=0.00, max_value=0.50, value=0.00, step=0.01, format="%.2f")
     model_param_text = f"n_estimators={int(n_estimators)}，max_depth={int(max_depth)}，learning_rate={learning_rate:.2f}"
     cv_result_df = st.session_state.get("module2_cv_result", pd.DataFrame())
     selected_cv_row = cv_result_df[cv_result_df["模型备选"] == "模型2"]
@@ -1136,8 +1175,8 @@ def page_forecast_training() -> None:
     if not st.session_state.get("module2_model_ready"):
         st.info("请按交叉验证推荐结果确认模型参数。")
         return
-    confirmed_params = st.session_state.get("module2_selected_params", {"n_estimators": 100, "max_depth": 4, "learning_rate": 0.08})
-    model_param_text = f"n_estimators={confirmed_params.get('n_estimators', 100)}，max_depth={confirmed_params.get('max_depth', 4)}，learning_rate={float(confirmed_params.get('learning_rate', 0.08)):.2f}"
+    confirmed_params = st.session_state.get("module2_selected_params", {"n_estimators": 0, "max_depth": 0, "learning_rate": 0.0})
+    model_param_text = f"n_estimators={confirmed_params.get('n_estimators', 0)}，max_depth={confirmed_params.get('max_depth', 0)}，learning_rate={float(confirmed_params.get('learning_rate', 0.0)):.2f}"
 
     train_count, test_count, _ = split_counts(sample_count, split_ratio)
 
@@ -1153,13 +1192,13 @@ def page_forecast_training() -> None:
             f"特征数量{len(selected_features)}，目标字段 {target_field}",
             f"模型 {selected_model_label}，{model_param_text}",
             "构建训练矩阵 X_train / y_train 与测试矩阵 X_test",
-            "初始化 XGBoost 回归模型，n_estimators 表示 boosting 迭代轮数",
+            f"初始化 {selected_model_label}，准备开始模型训练",
         ]
         log_box = st.empty()
         progress = st.progress(0)
         log_box.code("\n".join(rendered), language="text")
         milestone_step = max(n_rounds // 10, 1)
-        sleep_seconds = 10.0 / n_rounds
+        sleep_seconds = 5.0 / n_rounds
         for round_index in range(1, n_rounds + 1):
             progress.progress(round_index / n_rounds)
             if round_index == 1 or round_index == n_rounds or round_index % milestone_step == 0:
@@ -1207,6 +1246,16 @@ def page_forecast_training() -> None:
 
     st.subheader("9. 销量预测")
     if st.button("使用推荐模型生成销量预测", type="primary"):
+        render_timed_steps(
+            [
+                "正在读取已训练模型参数...",
+                "正在读取商品历史销量特征...",
+                "正在生成未来销量预测...",
+                "正在写入 forecast_result.csv...",
+                "正在准备预测数据预览...",
+            ],
+            duration_seconds=5.0,
+        )
         forecast = make_forecast()
         st.session_state["module2_forecast_done"] = True
         st.session_state["module2_forecast_cycle"] = forecast_cycle
@@ -1322,6 +1371,17 @@ def page_advice_handoff() -> None:
     )
 
     if st.button("生成补货计算与交接文件", type="primary"):
+        render_timed_steps(
+            [
+                "正在读取销量预测结果 forecast_result.csv...",
+                "正在读取库存风险预警结果...",
+                "正在计算目标库存和补货点...",
+                "正在生成补货建议 purchase_advice.csv...",
+                "正在生成清仓建议 clearance_advice.csv...",
+                "正在整理结果交接文件...",
+            ],
+            duration_seconds=6.0,
+        )
         purchase, clearance = make_advice(lead_time_days, safety_stock_days, int(min_purchase_qty))
         st.session_state["module2_advice_generated"] = True
         st.success("已生成补货建议和清仓建议。")

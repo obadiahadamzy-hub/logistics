@@ -44,6 +44,45 @@ CODE_TEMPLATES = {
 
     return df
 """,
+    "数据归一化模板": """def process(df):
+    \"\"\"订单和商品数值字段归一化函数。\"\"\"
+    df = df.copy()
+
+    normalize_columns = [
+        "quantity",
+        "order_amount",
+        "unit_price",
+        "cost_price",
+        "gross_profit_rate",
+        "stock_qty",
+        "stock_amount",
+    ]
+
+    for column in normalize_columns:
+        if column in df.columns:
+            values = pd.to_numeric(df[column], errors="coerce")
+            min_value = values.min()
+            max_value = values.max()
+            if pd.notna(min_value) and pd.notna(max_value) and max_value != min_value:
+                df[column + "_norm"] = ((values - min_value) / (max_value - min_value)).round(4)
+            else:
+                df[column + "_norm"] = 0
+
+    return df
+""",
+    "独热编码模板": """def process(df):
+    \"\"\"分类字段独热编码函数。\"\"\"
+    df = df.copy()
+
+    cols = ["category", "order_status", "region_type"]
+
+    for col in cols:
+        if col in df.columns:
+            one_hot = pd.get_dummies(df[col], prefix=col)
+            df = pd.concat([df, one_hot], axis=1)
+
+    return df
+""",
     "时间字段处理模板": """def process(df):
     \"\"\"时间字段标准化函数。\"\"\"
     df = df.copy()
@@ -557,7 +596,7 @@ def render_quality_overview(paths: dict[str, Path]) -> None:
         if problem_columns:
             st.markdown("#### 问题字段处理建议")
             st.write("、".join(problem_columns))
-            st.info("建议在“数据预处理工作流”中选择对应数据表，建立去重、空值处理和格式标准化节点。")
+            st.info("建议在“数据预处理工作流”中选择对应数据表，建立去重、空值处理、格式标准化和数据归一化节点。")
     else:
         st.info("点击“生成数据质量报告”后，将展示当前数据表的质量检查结果。")
 
@@ -582,6 +621,41 @@ def workflow_name_for_dataset(file_name: str) -> str:
     return f"{infer_business_type(file_name)}通用清洗流程"
 
 
+def add_normalized_columns(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    normalize_columns = [
+        "quantity",
+        "order_amount",
+        "unit_price",
+        "cost_price",
+        "gross_profit_rate",
+        "stock_qty",
+        "stock_amount",
+    ]
+    for column in normalize_columns:
+        if column not in df.columns:
+            continue
+        values = pd.to_numeric(df[column], errors="coerce")
+        min_value = values.min()
+        max_value = values.max()
+        if pd.notna(min_value) and pd.notna(max_value) and max_value != min_value:
+            df[f"{column}_norm"] = ((values - min_value) / (max_value - min_value)).round(4)
+        else:
+            df[f"{column}_norm"] = 0
+    return df
+
+
+def add_one_hot_columns(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    encode_columns = ["category", "order_status", "region_type"]
+    for column in encode_columns:
+        if column not in df.columns:
+            continue
+        dummies = pd.get_dummies(df[column].fillna("未知"), prefix=column)
+        df = pd.concat([df, dummies], axis=1)
+    return df
+
+
 def generic_clean_dataset(input_path: Path, paths: dict[str, Path]) -> list[str]:
     df = read_csv(input_path)
     df = df.drop_duplicates().copy()
@@ -591,6 +665,10 @@ def generic_clean_dataset(input_path: Path, paths: dict[str, Path]) -> list[str]
         elif column.endswith("_time"):
             df[column] = pd.to_datetime(df[column], errors="coerce").dt.strftime("%Y-%m-%d %H:%M:%S")
     df = df.fillna("")
+    if input_path.name in ["orders.csv", "products.csv", "inventory.csv"]:
+        df = add_normalized_columns(df)
+    if input_path.name in ["orders.csv", "products.csv", "outlets.csv"]:
+        df = add_one_hot_columns(df)
     df["clean_status"] = "通用清洗规则已应用"
     output_path = write_cleaned(df, paths, output_name_for_dataset(input_path.name))
     return [str(output_path)]
@@ -633,6 +711,8 @@ def detect_workflow_steps_from_code(code_text: str) -> dict[str, bool]:
         "deduplicate": "drop_duplicates" in code or "duplicated" in code,
         "fill_missing": "fillna" in code or "isna" in code or "quantity" in code,
         "standardize_format": "to_datetime" in code or "normalize_datetime" in code or "standardize_columns" in code,
+        "normalize_data": "normalize" in code or "_norm" in code or "min_value" in code or "max_value" in code,
+        "one_hot_encode": "get_dummies" in code or "one_hot" in code or "独热" in code,
         "output_check": "return df" in code or "clean_status" in code,
     }
 
@@ -656,6 +736,16 @@ def render_workflow_canvas(nodes: list[dict[str, str | bool]]) -> None:
 def build_default_node_config(input_df: pd.DataFrame, input_path: Path, code_steps: dict[str, bool]) -> dict[str, dict[str, Any]]:
     date_columns = [column for column in input_df.columns if column.endswith("_date") or column.endswith("_time")]
     missing_columns = [column for column in input_df.columns if int(input_df[column].isna().sum()) > 0]
+    normalize_columns = [
+        column
+        for column in ["quantity", "order_amount", "unit_price", "cost_price", "gross_profit_rate", "stock_qty", "stock_amount"]
+        if column in input_df.columns
+    ]
+    one_hot_columns = [
+        column
+        for column in ["category", "order_status", "region_type", "town"]
+        if column in input_df.columns
+    ]
     deduplicate_key = "order_id" if "order_id" in input_df.columns else "整行去重"
     return {
         "重复数据处理": {
@@ -673,6 +763,18 @@ def build_default_node_config(input_df: pd.DataFrame, input_path: Path, code_ste
             "enabled": code_steps["standardize_format"] or bool(date_columns),
             "datetime_columns": date_columns[:2],
             "datetime_format": "YYYY-MM-DD / YYYY-MM-DD HH:mm:ss",
+        },
+        "数据归一化": {
+            "enabled": code_steps["normalize_data"],
+            "normalize_columns": normalize_columns,
+            "normalize_method": "Min-Max归一化",
+            "output_suffix": "_norm",
+        },
+        "独热编码": {
+            "enabled": code_steps["one_hot_encode"],
+            "encoding_columns": one_hot_columns,
+            "encoding_method": "One-Hot",
+            "output_prefix": "字段名前缀",
         },
         "输出校验": {
             "enabled": True,
@@ -751,6 +853,12 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
                 st.session_state[f"workflow_node_toggle_{input_path.stem}_{node_index}"] = bool(
                     detected_config[node_name].get("enabled")
                 )
+            detected_extra_nodes = [
+                node_name
+                for node_name in ["数据归一化", "独热编码"]
+                if bool(detected_config.get(node_name, {}).get("enabled"))
+            ]
+            st.session_state[f"workflow_extra_nodes_{input_path.stem}"] = detected_extra_nodes
             st.success("已根据代码更新节点配置")
     with action_cols[1]:
         st.caption("识别完成后，可选择需要加入工作流的预处理节点。")
@@ -760,29 +868,54 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
         st.stop()
 
     node_config = st.session_state[node_config_key]
-    node_options = ["重复数据处理", "空值处理", "格式标准化", "输出校验"]
+    if "数据归一化" not in node_config:
+        node_config["数据归一化"] = build_default_node_config(input_df, input_path, code_steps)["数据归一化"]
+    if "独热编码" not in node_config:
+        node_config["独热编码"] = build_default_node_config(input_df, input_path, code_steps)["独热编码"]
+    base_node_options = ["重复数据处理", "空值处理", "格式标准化", "输出校验"]
+    extension_node_options = ["数据归一化", "独热编码"]
 
     st.markdown("##### 选择预处理节点")
-    node_toggle_columns = st.columns(len(node_options))
+    base_area, extension_area = st.columns([2.2, 1])
     selected_nodes = []
-    for node_index, (node_column, node_name) in enumerate(zip(node_toggle_columns, node_options)):
-        toggle_key = f"workflow_node_toggle_{input_path.stem}_{node_index}"
-        if toggle_key not in st.session_state:
-            st.session_state[toggle_key] = bool(node_config[node_name].get("enabled"))
-        with node_column:
-            with st.container(border=True):
-                selected = st.checkbox(node_name, key=toggle_key)
-                st.caption(
-                    {
-                        "重复数据处理": "识别并移除重复记录",
-                        "空值处理": "填补或删除缺失数据",
-                        "格式标准化": "统一日期与时间格式",
-                        "输出校验": "检查处理结果质量",
-                    }[node_name]
-                )
-        node_config[node_name]["enabled"] = bool(selected)
-        if selected:
-            selected_nodes.append(node_name)
+    with base_area:
+        st.caption("代码识别节点")
+        node_toggle_columns = st.columns(len(base_node_options))
+        for node_index, (node_column, node_name) in enumerate(zip(node_toggle_columns, base_node_options)):
+            toggle_key = f"workflow_node_toggle_{input_path.stem}_{node_index}"
+            if toggle_key not in st.session_state:
+                st.session_state[toggle_key] = bool(node_config[node_name].get("enabled"))
+            with node_column:
+                with st.container(border=True):
+                    selected = st.checkbox(node_name, key=toggle_key)
+                    st.caption(
+                        {
+                            "重复数据处理": "移除重复记录",
+                            "空值处理": "填补缺失数据",
+                            "格式标准化": "统一日期格式",
+                            "输出校验": "检查处理结果",
+                        }[node_name]
+                    )
+            node_config[node_name]["enabled"] = bool(selected)
+            if selected:
+                selected_nodes.append(node_name)
+
+    with extension_area:
+        st.caption("追加扩展节点")
+        extra_key = f"workflow_extra_nodes_{input_path.stem}"
+        default_extra_nodes = st.session_state.get(extra_key, [])
+        selected_extra_nodes = st.multiselect(
+            "选择其他处理节点",
+            extension_node_options,
+            default=[node for node in default_extra_nodes if node in extension_node_options],
+            label_visibility="collapsed",
+            key=f"{extra_key}_select",
+        )
+        st.caption("选择后自动加入下方工作流链条")
+        for node_name in extension_node_options:
+            node_config[node_name]["enabled"] = node_name in selected_extra_nodes
+        st.session_state[extra_key] = selected_extra_nodes
+        selected_nodes.extend(selected_extra_nodes)
     st.session_state[node_config_key] = node_config
 
     workflow_nodes = [{"name": "数据输入", "enabled": True, "code_ref": "df 参数输入"}]
@@ -790,6 +923,8 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
         "重复数据处理": "drop_duplicates()",
         "空值处理": "fillna() / isna()",
         "格式标准化": "to_datetime()",
+        "数据归一化": "Min-Max / _norm",
+        "独热编码": "get_dummies()",
         "输出校验": "return df",
     }
     workflow_nodes.extend(
@@ -805,6 +940,8 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
     deduplicate_config = node_config["重复数据处理"]
     missing_config = node_config["空值处理"]
     standardize_config = node_config["格式标准化"]
+    normalize_config = node_config["数据归一化"]
+    one_hot_config = node_config["独热编码"]
     output_check_config = node_config["输出校验"]
     enable_deduplicate = bool(deduplicate_config.get("enabled"))
     deduplicate_key = str(deduplicate_config.get("deduplicate_key", "整行去重"))
@@ -813,6 +950,10 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
     fill_value = str(missing_config.get("fill_value", "1"))
     enable_standardize = bool(standardize_config.get("enabled"))
     selected_date_columns = list(standardize_config.get("datetime_columns", []))
+    enable_normalize = bool(normalize_config.get("enabled"))
+    normalize_columns = list(normalize_config.get("normalize_columns", []))
+    enable_one_hot = bool(one_hot_config.get("enabled"))
+    one_hot_columns = list(one_hot_config.get("encoding_columns", []))
     enable_output_check = bool(output_check_config.get("enabled"))
     output_check_items = list(output_check_config.get("output_check_items", []))
 
@@ -831,7 +972,7 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
         output_names = st.text_input("输出结果名称", value=default_output)
         version = st.text_input("版本号", value="v1.0")
         enabled = st.checkbox("启用流程", value=True)
-    description = st.text_area("流程说明", value=f"对 {input_path.name} 应用通用数据清洗规则，处理空值、重复和格式问题。", height=90)
+    description = st.text_area("流程说明", value=f"对 {input_path.name} 应用通用数据预处理规则，处理空值、重复、格式和数值归一化问题。", height=90)
     default_params = {
         "input_object": "df",
         "deduplicate": enable_deduplicate,
@@ -844,6 +985,13 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
         "standardize_format": enable_standardize,
         "datetime_columns": selected_date_columns,
         "datetime_format": standardize_config.get("datetime_format"),
+        "normalize_data": enable_normalize,
+        "normalize_columns": normalize_columns,
+        "normalize_method": normalize_config.get("normalize_method"),
+        "normalize_output_suffix": normalize_config.get("output_suffix"),
+        "one_hot_encode": enable_one_hot,
+        "one_hot_columns": one_hot_columns,
+        "one_hot_method": one_hot_config.get("encoding_method"),
         "output_check": enable_output_check,
         "output_check_items": output_check_items,
         "output_fail_action": output_check_config.get("fail_action"),
@@ -932,7 +1080,7 @@ def render_workflow_builder(paths: dict[str, Path]) -> None:
         f"当前流程：{selected_registered_workflow['workflow_category']} ｜ "
         f"适用数据：{selected_registered_workflow.get('input_dataset', '通用CSV')}"
     )
-    st.caption("选择多张数据表后，平台会按字段识别、空值处理、去重和格式标准化规则生成对应的 clean_*.csv，结果保存到 data/cleaned。")
+    st.caption("选择多张数据表后，平台会按字段识别、空值处理、去重、格式标准化和数值归一化规则生成对应的 clean_*.csv，结果保存到 data/cleaned。")
     batch_options = [str(path) for path in raw_files]
     default_batch = [str(input_path)] if str(input_path) in batch_options else []
     selected_batch = st.multiselect("选择要批量清洗的数据表", batch_options, default=default_batch, format_func=lambda value: Path(value).name)
@@ -1000,6 +1148,11 @@ def simulate_clean_orders(paths: dict[str, Path]) -> list[str]:
     orders.loc[format_mask, "clean_status"] = "统一日期格式"
     orders.loc[missing_mask & format_mask, "clean_status"] = "填补缺失数量并统一日期格式"
     clean_orders = orders.drop_duplicates(subset=["order_id"], keep="first").copy()
+    clean_orders = add_normalized_columns(clean_orders)
+    clean_orders = add_one_hot_columns(clean_orders)
+    for column in ["order_status_已签收", "order_status_配送中", "order_status_已退货", "order_status_异常"]:
+        if column not in clean_orders.columns:
+            clean_orders[column] = 0
     clean_orders = clean_orders[
         [
             "order_id",
@@ -1008,8 +1161,14 @@ def simulate_clean_orders(paths: dict[str, Path]) -> list[str]:
             "product_id",
             "quantity",
             "order_amount",
+            "quantity_norm",
+            "order_amount_norm",
             "outlet_id",
             "order_status",
+            "order_status_已签收",
+            "order_status_配送中",
+            "order_status_已退货",
+            "order_status_异常",
             "is_urgent",
             "clean_status",
         ]
